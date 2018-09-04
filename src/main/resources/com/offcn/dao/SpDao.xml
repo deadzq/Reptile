@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.offcn.dao.SpDao">
+    <insert id="savesp" parameterType="com.offcn.po.Sp" >
+    insert into plum(id,name,lprice,price,hprice,date) values (#{id},#{name},#{lprice},#{price},#{hprice},#{date})
+    </insert>
+     <!-- <insert id="savesp1" parameterType="com.offcn.po.Sp" >
+    insert into sp1(id,price,date) values (#{id},#{price},#{date})
+    </insert> -->
+     <select id="selectsp" resultType="com.offcn.po.Sp">
+       select * from plum order by date desc
+    </select>
+    <!--  <select id="selectsp1" resultType="com.offcn.po.Sp">
+       select * from sp1
+    </select> -->
+</mapper>

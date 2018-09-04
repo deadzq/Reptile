@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
+   <!-- 抓取，存储到数据库 -->
+    <bean id="job1"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<bean class="com.offcn.controller.Capture" />
+		</property>
+		<property name="targetMethod" value="grabber" />
+		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
+	</bean>
+	
+	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="job1" />
+		<property name="cronExpression" value="0 8 23 * * ?" /><!-- 从14点开始直到14点59分每隔1分钟运行一次 -->
+	</bean>
+    <!-- 生成pdf -->
+     <bean id="job2"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<bean class="com.offcn.controller.Itext" />
+		</property>
+		<property name="targetMethod" value="main" />
+		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
+	</bean>
+	
+	<bean id="cronTrigger1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="job2" />
+		<property name="cronExpression" value="0 10 23 * * ?" /><!-- 从14点开始直到14点59分每隔1分钟运行一次 -->
+	</bean>
+    <!-- 发邮件 -->
+     <bean id="job3"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<bean class="com.offcn.controller.Mail" />
+		</property>
+		<property name="targetMethod" value="main" />
+		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
+	</bean>
+	
+	<bean id="cronTrigger2" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="job3" />
+		<property name="cronExpression" value="0 11 23 * * ?" /><!-- 从14点开始直到14点59分每隔1分钟运行一次 -->
+	</bean>
+    
+    
+   <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="cronTrigger" />
+				<ref bean="cronTrigger1" />
+				<ref bean="cronTrigger2" />
+			</list>
+		</property>
+	</bean>
+   
+</beans>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="js/echarts.common.min.js"></script>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+</head>
+<body>
+<div id="main" style="width:1000px;height:600px;"></div>
+
+<script type="text/javascript">
+var mychart=echarts.init(document.getElementById('main'));
+
+var option={
+     //标题
+     title:{
+        text:'2017-6与2018-6李子平均价对比'
+     },
+      tooltip: {
+        trigger: 'axis'
+    },
+     legend: {
+        data:['2017-6 平均价','2018-6 平均价']
+    },
+  toolbox: {
+        feature: {
+            saveAsImage: {}
+        }
+    },
+     //x轴数据
+     xAxis:{
+        data:[]
+     },
+     //y轴数据
+     yAxis:{}
+     ,
+     //序列化数据
+     series:[{
+         name:'2017-6 平均价',
+         type:'line',
+         data:[],
+         smooth: true
+     },{
+         name:'2018-6 平均价',
+         type:'line',
+         data:[],
+         smooth: true
+     }]
+};
+
+//初始化图表配置
+mychart.setOption(option);
+//数据加载提示打开
+mychart.showLoading();
+//定义两个数组，存储日期与平均价
+var dates=[];
+var prices=[];
+//发送ajax请求
+$.ajax({
+   type:"post",
+   url:"getallsp.do",
+   data:{},
+   dataType:"json",
+   success:function(result){
+       //判断返回结果是否为空
+       if(result){
+        //便利json数组
+        for(var i=0;i<result.length;i++){
+          dates.push(result[i].date);
+          prices.push(result[i].price);
+        }
+        //隐藏加载动画
+        mychart.hideLoading();
+        //把获取到的数据设定给图表对象
+        mychart.setOption({
+            xAxis:{
+            data:dates
+         },
+         series:[{
+            name:'2017-6 平均价',
+            type:'line',
+            data:prices,
+            smooth: true
+          }]        
+        });
+        
+       }
+   },
+   error:function(errorMsg){
+      alert("请求图表数据失败");
+      //alert(errorMsg);
+       //隐藏加载动画
+        mychart.hideLoading();
+      
+   }
+})
+
+var dates1=[];
+var prices1=[];
+
+$.ajax({
+   type:"post",
+   url:"getallsp1.do",
+   data:{},
+   dataType:"json",
+   success:function(result){
+       //判断返回结果是否为空
+       if(result){
+        //便利json数组
+        for(var i=0;i<result.length;i++){
+          dates1.push(result[i].date);
+          prices1.push(result[i].price);
+        }
+        //隐藏加载动画
+        mychart.hideLoading();
+        //把获取到的数据设定给图表对象
+        mychart.setOption({
+            xAxis:{
+            data:dates1
+         },
+         series:[{
+            name:'2018-6 平均价',
+            type:'line',
+            data:prices1,
+            smooth: true
+          }]        
+        });
+        
+       }
+   },
+   error:function(errorMsg){
+      alert("请求图表数据失败");
+      //alert(errorMsg);
+       //隐藏加载动画
+        mychart.hideLoading();
+      
+   }
+})
+
+
+
+
+
+
+
+</script>
+</body>
+</html>
